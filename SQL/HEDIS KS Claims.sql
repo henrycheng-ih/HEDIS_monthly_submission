@@ -244,7 +244,13 @@ SELECT DISTINCT
 		ELSE CONVERT(char, CAST(CS.ServiceDateFrom AS DATE), 101) 
 	  END fromdt			
 	, ISNULL(CONVERT(char, CAST(CS.ServiceDateTo AS DATE), 101), '') thrudt
-	, COALESCE(PROV.NPI,'') provnbr
+
+	/* per email with Wilfred, if KS_Providers has no match, default to using billing provider */
+	, CASE 
+		WHEN PROV.NPI IS NULL THEN BP.NPI
+		ELSE PROV.NPI
+	  END provnbr
+
 	, isnull(
 		CASE WHEN tb.SPEC_ID LIKE '%,%'
 		THEN LEFT(tb.SPEC_ID,CHARINDEX(',',tb.SPEC_ID)-1)
@@ -305,11 +311,12 @@ LEFT JOIN [IHHEDIDW].[dbo].[KS_ClaimServices] CS WITH(NOLOCK) ON CM.ClaimNo = CS
 LEFT JOIN [IHHEDIDW].[dbo].[ks_DiagnosisCodes] DC WITH(NOLOCK) ON DC.ClaimNo = CM.ClaimNo
 LEFT JOIN [IHHEDIDW].[dbo].[KS_Members] MEM WITH(NOLOCK) ON MEM.ClaimNo = CM.ClaimNo
 LEFT JOIN [IHHEDIDW].[dbo].[KS_Providers] PROV WITH(NOLOCK) ON PROV.ClaimNo = CM.ClaimNo
+LEFT JOIN IHHEDIDW.dbo.KS_BillingProvider BP with(nolock) on BP.ClaimNo = CM.ClaimNo
 LEFT JOIN [IHHEDIDW].[dbo].[KS_CodeSource682] TAX WITH(NOLOCK) ON TAX.Code = PROV.TaxonomyCode
 LEFT JOIN [IHHEDIDW].[dbo].[KS_ClaimServiceLineAdjustments] CSLA WITH(NOLOCK) ON CSLA.ClaimNo = CM.ClaimNo
 LEFT JOIN [IHPAS-EZCAPSQL\EZCAP].IHHMG.dbo.REPORT_PROV_NAME_V provez WITH(NOLOCK) ON PROV.NPI = provez.PROVID
 LEFT JOIN [IHPAS-EZCAPSQL\EZCAP].IHHMG.dbo.PROV_SPECINFO_V spec WITH(NOLOCK) ON provez.PROV_KEYID = spec.PROV_KEYID
-left join #SPEC_TB tb WITH(NOLOCK) ON tb.SPECNAME = spec.SPECDESCR
+LEFT JOIN #SPEC_TB tb WITH(NOLOCK) ON tb.SPECNAME = spec.SPECDESCR
 LEFT JOIN (SELECT 
 	ClaimNO, [1] DIAG1,[2] DIAG2,[3] DIAG3,[4] DIAG4,[5] DIAG5,[6] DIAG6,[7] DIAG7,[8] DIAG8,[9] DIAG9,[10] DIAG10,[11] DIAG11,[12] DIAG12,[13] DIAG13,[14] DIAG14,[15] DIAG15,[16] DIAG16,[17] DIAG17,[18] DIAG18,[19] DIAG19,[20] DIAG20
 	FROM (
@@ -322,4 +329,5 @@ LEFT JOIN (SELECT
 ORDER BY claimid, linenbr
 
 
-SELECT * FROM #HEDIS_KS_CLAIMS ORDER BY claimid, linenbr
+SELECT * FROM #HEDIS_KS_CLAIMS 
+ORDER BY claimid, linenbr
