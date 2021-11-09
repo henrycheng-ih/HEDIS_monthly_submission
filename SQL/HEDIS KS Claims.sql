@@ -326,9 +326,10 @@ LEFT JOIN (SELECT
 		MAX(DiagnosisCode)
 		FOR RowID IN ([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12],[13],[14],[15],[16],[17],[18],[19],[20])
 ) PT) PivotTable ON PivotTable.ClaimNo = CM.ClaimNo
-WHERE MEM.ContractID in ('H5496', 'H2793')
+--WHERE MEM.ContractID in ('H5496', 'H2793')
 ORDER BY claimid, linenbr
 
 
 SELECT * FROM #HEDIS_KS_CLAIMS 
 ORDER BY claimid, linenbr
+

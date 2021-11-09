@@ -106,8 +106,8 @@ SELECT DISTINCT
 	,'' cptmod1
 	,'' cptmod2
 	,'' hcpcs
-	,'' [cpt-ii]
-	,'' [cpt-iimod]
+	,'' [cpt_ii]
+	,'' [cpt_iimod]
 	,RIGHT('0000'+CONVERT(VARCHAR(4),COALESCE(ci.RevCode,'')),4) rev	--check
 	,'' drg
 	,'' billtype
@@ -177,8 +177,8 @@ SELECT DISTINCT
 	,COALESCE(ci.ProcCode,'') cpt,'' cptmod1
 	,'' cptmod2
 	,'' hcpcs
-	,'' [cpt-ii]
-	,'' [cpt-iimod]
+	,'' [cpt_ii]
+	,'' [cpt_iimod]
 	,RIGHT('0000'+CONVERT(VARCHAR(4),COALESCE(ci.RevCode,'')),4) rev	--check
 	,cp.DRG drg		--check
 	,cp.TypeOfBill billtype		--check
