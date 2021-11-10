@@ -20,13 +20,21 @@ SELECT DISTINCT
 	,MMR.[Original Reason for Entitlement Code (OREC)] [dblorec]
 	--,100 [dblrep_pop_id]
 	/***** 2020 *****/
+	/* 
+		Henry: per Lifan from TMG, using sumission ID as population ID 
+		Submission ID logic is obtained from HP_elig file produced by Darin
+	*/
 	,CASE 
-		WHEN MMR.[Plan Benefit Package ID] IN ('007','009','007-MM','009-MM') THEN '1010'
-		WHEN [Contract Number] = 'H5496' AND MMR.[Plan Benefit Package ID] IN ('005','005-MM') THEN '1020'
-		WHEN MMR.[Plan Benefit Package ID] IN ('003','003-MM') THEN '2010'
-		WHEN [Contract Number] = 'H2793' AND MMR.[Plan Benefit Package ID] IN ('005','005-MM') THEN '2020'
-		WHEN MMR.[Plan Benefit Package ID] IN ('004','004-MM') THEN '2030'
-		END [dblrep_pop_id]
+		WHEN [Contract Number] = 'H5496' AND MMR.[Plan Benefit Package ID] IN ('007','009','007-MM','009-MM','012','012-MM') THEN '14129'
+		WHEN [Contract Number] = 'H5496' AND MMR.[Plan Benefit Package ID] IN ('005','005-MM') THEN '14378'
+		WHEN [Contract Number] = 'H5496' AND MMR.[Plan Benefit Package ID] IN ('011','011-MM') THEN '99999'
+
+		WHEN [Contract Number] = 'H2793' AND MMR.[Plan Benefit Package ID] IN ('003','003-MM','007','007-MM') THEN '14993'
+		WHEN [Contract Number] = 'H2793' AND MMR.[Plan Benefit Package ID] IN ('005','005-MM') THEN '14994'
+		WHEN [Contract Number] = 'H2793' AND MMR.[Plan Benefit Package ID] IN ('004','004-MM') THEN '14995'
+		
+		ELSE ''
+	 END [dblrep_pop_id]
 	/***** 2019 *****/
 	--,CASE 
 	--	WHEN MMR.[Plan Benefit Package ID] IN ('007','009','007-MM','009-MM') THEN '1010'
